@@ -1,6 +1,7 @@
 import imp
 import numpy as np
 from matplotlib import pyplot as plt
+from scipy.io.wavfile import write
 
 SAMPLE_RATE = 44100 #HERTZ
 DURATION = 5 #SECONDS
@@ -29,4 +30,6 @@ tono_normalizado = np.int16((tono_conjunto / tono_conjunto.max()) * 32767)
 
 plt.plot(tono_normalizado[:1000])
 plt.show()
+
+write("onda.wav", SAMPLE_RATE, tono_normalizado) # generar archivo de sonido
 
