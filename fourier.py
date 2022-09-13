@@ -68,3 +68,9 @@ new_sig = irfft(yf)
 plt.plot(new_sig[:1000])
 plt.show()
 
+# guardar en archivo de audio
+
+normalizado = np.int16(new_sig * (32767 / new_sig.max()))
+
+write("clean.wav", SAMPLE_RATE, normalizado)
+
