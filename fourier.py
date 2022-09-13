@@ -10,3 +10,23 @@ def generar_onda_seno(freq, sample_rate, duration):
     frequencies = x * freq
     y = np.sin((2 * np.pi) * frequencies) #en radianes
     return x, y
+
+x,y = generar_onda_seno(2, SAMPLE_RATE, DURATION)
+plt.plot(x, y)
+# plt.show() # mostrar la onda generada
+
+#generar tonos
+
+_, tono = generar_onda_seno(400, SAMPLE_RATE, DURATION)
+_, ruido = generar_onda_seno(4000, SAMPLE_RATE, DURATION)
+ruido = ruido * 0.3 #bajar intensidad de ruido
+
+tono_conjunto = tono + ruido
+
+# normalizar tono para entrar en 16 bits
+
+tono_normalizado = np.int16((tono_conjunto / tono_conjunto.max()) * 32767)
+
+plt.plot(tono_normalizado[:1000])
+plt.show()
+
