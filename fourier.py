@@ -3,8 +3,10 @@ import numpy as np
 from matplotlib import pyplot as plt
 from scipy.io.wavfile import write
 from scipy.fft import fft, fftfreq
+from scipy.fft import rfft, rfftfreq
+from scipy.fft import irfft
 
-SAMPLE_RATE = 44100 #HERTZ
+SAMPLE_RATE = 44100 #HERTZfrom scipy.fft import irfft
 DURATION = 5 #SECONDS
 N = SAMPLE_RATE * DURATION #cantidad de muestras en el tono
 
@@ -15,7 +17,7 @@ def generar_onda_seno(freq, sample_rate, duration):
     return x, y
 
 x,y = generar_onda_seno(2, SAMPLE_RATE, DURATION)
-plt.plot(x, y)
+# plt.plot(x, y)
 # plt.show() # mostrar la onda generada
 
 #generar tonos
@@ -30,14 +32,39 @@ tono_conjunto = tono + ruido
 
 tono_normalizado = np.int16((tono_conjunto / tono_conjunto.max()) * 32767)
 
-plt.plot(tono_normalizado[:1000])
+# plt.plot(tono_normalizado[:1000])
 # plt.show()
 
 # write("onda.wav", SAMPLE_RATE, tono_normalizado) # generar archivo de sonido
 
 # calcular el espectro de frecuencias
-yf = fft(tono_normalizado)
+# como está definido va a mostrar las frecuencias -400, -4000, 400 y 4000 Hz
+yf = fft(tono_normalizado) #fft calcula la transformada
 xf = fftfreq(N, 1 / SAMPLE_RATE)
 
-plt.plot(xf, np.abs(yf))
+# plt.plot(xf, np.abs(yf)) #yf es un numero complejo, abs devuelve el módulo de ese numero
+# plt.show()
+
+# rfft usa numeros reales en lugar de complejos
+yf = rfft(tono_normalizado)
+xf = rfftfreq(N, 1 / SAMPLE_RATE)
+
+# plt.plot(xf, np.abs(yf))
+# plt.show()
+
+# La maxima frequencia es la mitad del sample rate
+points_per_freq = len(xf) / (SAMPLE_RATE / 2)
+
+# La frequencia que buscamos es 4000 Hz
+target_idx = int(points_per_freq * 4000)
+
+yf[target_idx - 1 : target_idx + 2] = 0
+
+# plt.plot(xf, np.abs(yf))
+# plt.show()
+
+new_sig = irfft(yf)
+
+plt.plot(new_sig[:1000])
 plt.show()
+
